@@ -59,29 +59,38 @@ class DatasetSplitter:
         """
         for img_path in image_list:
             shutil.move(img_path, os.path.join(target_dir, os.path.basename(img_path)))
+            
+    def _copy_images(self, image_list, target_dir):
+        """
+        将图像复制到目标目录
+        :param image_list: 要复制的图像路径列表
+        :param target_dir: 目标目录
+        """
+        for img_path in image_list:
+            shutil.copy(img_path, os.path.join(target_dir, os.path.basename(img_path)))
 
     def split(self):
         """
-        划分数据集并将图像移动到目标目录
+        划分数据集并将图像复制到目标目录
         """
         # 获取所有类别
         class_names = os.listdir(self.source_dir)
         self._create_dirs(class_names)
-
+    
         # 使用 tqdm 显示进度条
         for class_name in tqdm(class_names, desc="Processing classes", unit="class"):
             class_dir = os.path.join(self.source_dir, class_name)
             if os.path.isdir(class_dir):
                 # 对每个类别的图像进行划分
                 train_imgs, val_imgs, test_imgs = self._split_class_images(class_dir)
-
+    
                 if train_imgs and val_imgs and test_imgs:
-                    # 将划分后的图像移动到目标文件夹
-                    self._move_images(train_imgs, os.path.join(self.target_dir, 'train', class_name))
-                    self._move_images(val_imgs, os.path.join(self.target_dir, 'val', class_name))
-                    self._move_images(test_imgs, os.path.join(self.target_dir, 'test', class_name))
-
-        print("数据集划分完成！")
+                    # 将划分后的图像复制到目标文件夹
+                    self._copy_images(train_imgs, os.path.join(self.target_dir, 'train', class_name))
+                    self._copy_images(val_imgs, os.path.join(self.target_dir, 'val', class_name))
+                    self._copy_images(test_imgs, os.path.join(self.target_dir, 'test', class_name))
+    
+        print("数据集划分并复制完成！")
 
 # 通过 if __name__ == "__main__": 确保只有在直接运行此文件时才会执行
 if __name__ == "__main__":
