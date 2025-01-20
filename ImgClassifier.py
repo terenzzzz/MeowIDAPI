@@ -11,6 +11,7 @@ from torchvision import models, transforms
 from PIL import Image
 import torch.nn.functional as F
 import os
+import json
 
 class ImgClassifier:
     def __init__(self, model_path, dataset_dir, device=None):
@@ -43,10 +44,17 @@ class ImgClassifier:
 
         # 加载类别标签（通过文件夹名来获取类别名称）
         self.idx_to_label = {i: folder for i, folder in enumerate(sorted(os.listdir(dataset_dir)))}
+        
+        # 加载类别名称的映射字典
+        with open("class_names.json", 'r', encoding='utf-8') as f:
+            self.class_names = json.load(f)  # 载入 JSON 文件
+        
+        # 创建类别到中文的映射
+        self.idx_to_label = {idx: label for idx, label in enumerate(self.class_names.keys())}
 
     def predict_image(self, image_path, top_k=4):
         """
-        对单张图像进行预测，并返回概率最高的几个类别
+        对单张图像进行预测，并返回概率最高的几个类别及其中文名称
         
         :param image_path: 图像文件的路径
         :param top_k: 返回前 K 个类别及其概率
@@ -73,11 +81,12 @@ class ImgClassifier:
         top_probs = top_probs.squeeze().cpu().numpy()
         top_indices = top_indices.squeeze().cpu().numpy()
 
-        # 获取预测类别的名称
-        top_classes = [self.idx_to_label[idx] for idx in top_indices]
+        # 获取预测类别的英文名称，并从 class_names 字典获取对应的中文名称
+        top_classes_en = [self.idx_to_label[idx] for idx in top_indices]
+        top_classes_cn = [self.class_names[class_name] for class_name in top_classes_en]
 
         # 返回类别和对应的概率
-        return list(zip(top_classes, top_probs))
+        return list(zip(top_classes_en,top_classes_cn, top_probs))
 
 # 使用示例
 if __name__ == "__main__":

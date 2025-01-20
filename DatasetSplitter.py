@@ -9,9 +9,10 @@ import os
 import shutil
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm  # 导入 tqdm 库
+import json
 
 class DatasetSplitter:
-    def __init__(self, source_dir, target_dir, test_size=0.2, val_size=0.1, random_state=42, min_samples=2):
+    def __init__(self, source_dir, target_dir, test_size=0.2, val_size=0.1, random_state=42, min_samples=2,class_names_file='class_names.json'):
         """
         初始化数据集划分器
 
@@ -28,6 +29,7 @@ class DatasetSplitter:
         self.val_size = val_size
         self.random_state = random_state
         self.min_samples = min_samples
+        self.class_names_file = class_names_file  # 存储类别名称的文件
 
     def _create_dirs(self, class_names):
         """
@@ -78,26 +80,40 @@ class DatasetSplitter:
 
     def split(self):
         """
-        划分数据集并将图像复制到目标目录
+        划分数据集并将图像复制到目标目录，同时将类别名称保存到文件中
         """
         # 获取所有类别
         class_names = os.listdir(self.source_dir)
         self._create_dirs(class_names)
-    
+
+        # 存储原始类别名称
+        original_class_names = []
+
         # 使用 tqdm 显示进度条
         for class_name in tqdm(class_names, desc="Processing classes", unit="class"):
             class_dir = os.path.join(self.source_dir, class_name)
             if os.path.isdir(class_dir):
+                # 将类别名称存储在列表中
+                original_class_names.append(class_name)
+
                 # 对每个类别的图像进行划分
                 train_imgs, val_imgs, test_imgs = self._split_class_images(class_dir)
-    
+
                 if train_imgs and val_imgs and test_imgs:
                     # 将划分后的图像复制到目标文件夹
                     self._copy_images(train_imgs, os.path.join(self.target_dir, 'train', class_name))
                     self._copy_images(val_imgs, os.path.join(self.target_dir, 'val', class_name))
                     self._copy_images(test_imgs, os.path.join(self.target_dir, 'test', class_name))
-    
+
+        # 保存类别名称到文件
+        self._save_class_names(original_class_names)
+
         print("数据集划分并复制完成！")
+        
+    def _save_class_names(self, class_names):
+        """将类别名称保存到文件"""
+        with open(self.class_names_file, 'w', encoding='utf-8') as f:
+            json.dump(class_names, f, ensure_ascii=False, indent=4)
 
 # 通过 if __name__ == "__main__": 确保只有在直接运行此文件时才会执行
 if __name__ == "__main__":

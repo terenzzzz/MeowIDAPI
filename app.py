@@ -60,11 +60,12 @@ def predictBreed():
                     os.remove(temp_file_path)
                 except Exception as e:
                     print(f"Error deleting temp file: {e}")
-
-                # 将预测结果中的 numpy 类型转换为可 JSON 序列化的类型
-                predicted_classes_serializable = [
-                    (cls, convert_to_serializable(prob)) for cls, prob in predicted_classes
-                ]
+                
+            # 将预测结果中的英文类别、中文类别以及概率格式化，并确保概率为 Python 原生 float 类型
+            predicted_classes_serializable = [
+                [cls_en, cls_cn, round(float(prob), 4)]  # 将 prob 转换为 Python 原生 float 类型
+                for (cls_en, cls_cn, prob) in predicted_classes
+            ]
             
             # 返回预测结果
             return jsonify({
