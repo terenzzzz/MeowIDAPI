@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Jan 19 20:16:52 2025
+
+@author: Terence
+"""
+
 import os
 import shutil
 from sklearn.model_selection import train_test_split
@@ -94,7 +101,7 @@ class DatasetSplitter:
 
 # 通过 if __name__ == "__main__": 确保只有在直接运行此文件时才会执行
 if __name__ == "__main__":
-    source_dir = r'C:\Users\Terence\Desktop\catBreedDataSet'  # 使用原始字符串
+    source_dir = r'C:\Users\Terence\Desktop\images'  # 使用原始字符串
     target_dir = r'C:\Users\Terence\Desktop\split_catBreedDataSet'  # 使用原始字符串
 
     # 创建 DatasetSplitter 实例
