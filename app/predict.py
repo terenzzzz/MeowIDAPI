@@ -75,7 +75,7 @@ def get_cat_breed(img_bytes):
 def transform_image(im):  
     weights = ResNet50_Weights.DEFAULT
     preprocess = weights.transforms()
-    image = Image.open(io.BytesIO(im))
+    image = Image.open(io.BytesIO(im)).convert('RGB')
     return preprocess(image).unsqueeze(0)
 
 # 从本地加载图片并进行预测
