@@ -172,5 +172,5 @@ if __name__ == "__main__":
     TEST_DIR = r"C:\\Users\\Terence\\Desktop\\35-cat-breed-dataset\\test"
 
     classifier = CatBreedClassifier(TRAIN_DIR, TEST_DIR)
-    classifier.train(num_epochs=30)
+    classifier.train(num_epochs=50)
     classifier.evaluate()
