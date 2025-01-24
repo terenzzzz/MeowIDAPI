@@ -1,4 +1,7 @@
 # 猫咪品种分类器
+
+![截图](./screenshot.png)
+
 本项目开发了一款基于深度学习的猫咪品种识别应用，用户可以通过上传猫咪的图片，应用会自动识别并分类猫咪的品种，并输出每个品种的概率百分比。通过该应用，用户能够轻松了解自己猫咪的品种，同时获得相关的品种信息。
 
 本项目实现了一个基于 PyTorch 的猫咪品种分类模型。该模型使用一个包含猫咪图片的训练数据集，能够对不同品种的猫咪进行精准分类。在模型构建过程中，采用了 ResNet-50 预训练模型，并对其进行了微调，以实现最佳的分类效果。  
@@ -71,32 +74,32 @@
 
    成功上传并识别后，API 会返回 JSON 格式的响应数据，示例如下：
    ```json
-   {
-    "message": "File successfully uploaded and processed",
-    "prediction": [
-        {
-            "en": "Ragdoll",
-            "probability": 0.9495545625686646,
-            "zh": "布偶猫"
-        },
-        {
-            "en": "Birman",
-            "probability": 0.034615058451890945,
-            "zh": "缅甸猫"
-        },
-        {
-            "en": "Balinese",
-            "probability": 0.0039695934392511845,
-            "zh": "巴厘猫"
-        },
-        {
-            "en": "Himalayan",
-            "probability": 0.003602612530812621,
-            "zh": "喜马拉雅猫"
-        }
-    ]
-   }
-  ```
+      {
+       "message": "File successfully uploaded and processed",
+       "prediction": [
+           {
+               "en": "Ragdoll",
+               "probability": 0.9495545625686646,
+               "zh": "布偶猫"
+           },
+           {
+               "en": "Birman",
+               "probability": 0.034615058451890945,
+               "zh": "缅甸猫"
+           },
+           {
+               "en": "Balinese",
+               "probability": 0.0039695934392511845,
+               "zh": "巴厘猫"
+           },
+           {
+               "en": "Himalayan",
+               "probability": 0.003602612530812621,
+               "zh": "喜马拉雅猫"
+           }
+       ]
+      }
+     ```
 
 
 # 训练和测试结果
