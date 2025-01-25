@@ -8,6 +8,8 @@
 
 为了提升用户体验，我使用 Vue 构建了一个直观的 Web 应用，用户可以轻松上传图片并查看识别结果。项目的源代码在 （https://github.com/terenzzzz/MeowID ）
 
+项目体验地址: ( https://terenzzzz.cn/meowid/ )
+
 
 
 ### 资料来源
