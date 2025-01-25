@@ -29,7 +29,11 @@
 
    使用以下命令安装依赖：  
    ```bash
-   pip install torch torchvision tqdm numpy
+   pip install Flask Flask-Cors Pillow numpy tqdm
+   #CPU版本
+   pip install torch torchvision torchaudio
+   #Cuda版本
+   pip install torch==2.5.1+cu126 torchvision==0.20.1+cu126 torchaudio==2.5.1 -f https://download.pytorch.org/whl/torch_stable.html 
 2. **数据集准备**  
    数据集需分为 `train` 和 `test` 文件夹，目录结构如下：  
    ```plaintext
@@ -100,7 +104,42 @@
        ]
       }
      ```
-
+7. **部署服务**
+   启动 gunicorn 来运行应用：
+   ```bash
+   nohup gunicorn -w 4 -b 0.0.0.0:5000 app:app &
+   ```
+   使用Nginx反向代理:
+   ```bash
+      server {
+       # 需要被监听的端口号，前提是此端口号没有被占用，否则在重启 Nginx 时会报错
+       listen       5001 ssl;
+           server_tokens off;
+           keepalive_timeout 5;
+           # 配置域名
+           server_name www.terenzzzz.cn;
+           #填写您的证书文件名称
+           ssl_certificate terenzzzz.cn.pem;
+           #填写您的私钥文件名称
+           ssl_certificate_key terenzzzz.cn.key;
+           ssl_session_timeout 5m;
+           # 可参考此 SSL 协议进行配置
+           ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+           #可按照此加密套件配置，写法遵循 openssl 标准
+           ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;
+           ssl_prefer_server_ciphers on;
+   
+   
+       client_max_body_size 20m;
+       client_body_buffer_size 128k;
+   
+       # 根请求会指向的页面
+           location / {
+           proxy_pass http://localhost:5000;
+          }
+      }
+   ```
+   
 
 # 训练和测试结果
 
