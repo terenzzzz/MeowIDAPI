@@ -2,6 +2,7 @@ import torch
 import io
 from PIL import Image
 from torchvision.models import ResNet50_Weights
+from torchvision.models.resnet import ResNet
 import random
 import numpy as np
 
@@ -55,7 +56,10 @@ def get_cat_breed(img_bytes):
     torch.backends.cudnn.benchmark = False
 
     dev = "cuda" if torch.cuda.is_available() else "cpu"
-    model = torch.load(model_path, map_location=torch.device(dev))
+    # PyTorch 2.6 changed torch.load default to weights_only=True.
+    # Our checkpoint is a full model object, so allowlist ResNet and load with weights_only=False.
+    torch.serialization.add_safe_globals([ResNet])
+    model = torch.load(model_path, map_location=torch.device(dev), weights_only=False)
     model.to(dev)
     model.eval()
 
